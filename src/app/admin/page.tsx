@@ -521,17 +521,19 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground p-6">
-      <div className="max-w-7xl mx-auto space-y-8">
-        <header className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 pb-6 border-b border-border animate-fade-in">
+    <div className="min-h-screen bg-[#050506] text-[#f4f4f5] font-mono selection:bg-[#00ff88] selection:text-black relative overflow-hidden pb-12">
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#1f1f24_1px,transparent_1px),linear-gradient(to_bottom,#1f1f24_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-[0.12] pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 space-y-8 relative z-10">
+        <header className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 pb-6 border-b border-[#1e1e24] animate-fade-in">
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <Link href="/dashboard" className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1 text-xs">
+              <Link href="/dashboard" className="text-[#a1a1aa] hover:text-[#00ff88] transition-colors flex items-center gap-1 text-[10px] font-mono uppercase tracking-wider">
                 <ArrowLeft className="size-3" /> Voltar ao Painel
               </Link>
             </div>
-            <h1 className="text-2xl font-black tracking-tight text-gradient font-sans">Administração Global</h1>
-            <p className="text-xs text-muted-foreground font-light">Painel administrativo centralizado com segregação de auditoria, usuários e infraestrutura</p>
+            <h1 className="text-sm font-black tracking-widest uppercase text-[#00ff88]">Administração Global</h1>
+            <p className="text-[10px] text-[#a1a1aa] font-mono">PAINEL ADMINISTRATIVO CENTRALIZADO DE AUDITORIA E INFRAESTRUTURA</p>
           </div>
           <div className="flex items-center gap-3 self-end sm:self-center">
             <NotificationBell />
@@ -539,63 +541,63 @@ export default function AdminPage() {
         </header>
 
         <main className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-          <aside className="lg:col-span-1 flex flex-row lg:flex-col gap-1 overflow-x-auto pb-2 lg:pb-0 border-b lg:border-b-0 lg:border-r border-border/40 pr-0 lg:pr-4">
+          <aside className="lg:col-span-1 flex flex-row lg:flex-col gap-1 overflow-x-auto pb-2 lg:pb-0 border-b lg:border-b-0 lg:border-r border-[#1e1e24] pr-0 lg:pr-4">
             <button
               onClick={() => setActiveTab("settings")}
-              className={`flex items-center gap-2 px-4 py-3 rounded-full text-xs font-semibold whitespace-nowrap transition-all duration-300 w-full justify-start ${
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-[2px] text-[10px] font-mono font-bold uppercase tracking-wider whitespace-nowrap transition-all duration-300 w-full justify-start border ${
                 activeTab === "settings" 
-                  ? "bg-foreground text-background shadow-lg" 
-                  : "hover:bg-secondary text-muted-foreground hover:text-foreground"
+                  ? "bg-[#00ff88] text-black border-transparent shadow-none" 
+                  : "bg-transparent border-[#1e1e24] text-[#a1a1aa] hover:text-[#f4f4f5] hover:bg-white/5 hover:border-[#00ff88]/30"
               }`}
             >
               <Settings className="size-4" /> Config. Segurança
             </button>
             <button
               onClick={() => setActiveTab("integrations")}
-              className={`flex items-center gap-2 px-4 py-3 rounded-full text-xs font-semibold whitespace-nowrap transition-all duration-300 w-full justify-start ${
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-[2px] text-[10px] font-mono font-bold uppercase tracking-wider whitespace-nowrap transition-all duration-300 w-full justify-start border ${
                 activeTab === "integrations" 
-                  ? "bg-foreground text-background shadow-lg" 
-                  : "hover:bg-secondary text-muted-foreground hover:text-foreground"
+                  ? "bg-[#00ff88] text-black border-transparent shadow-none" 
+                  : "bg-transparent border-[#1e1e24] text-[#a1a1aa] hover:text-[#f4f4f5] hover:bg-white/5 hover:border-[#00ff88]/30"
               }`}
             >
               <Puzzle className="size-4" /> Integrações
             </button>
             <button
               onClick={() => setActiveTab("broadcaster")}
-              className={`flex items-center gap-2 px-4 py-3 rounded-full text-xs font-semibold whitespace-nowrap transition-all duration-300 w-full justify-start ${
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-[2px] text-[10px] font-mono font-bold uppercase tracking-wider whitespace-nowrap transition-all duration-300 w-full justify-start border ${
                 activeTab === "broadcaster" 
-                  ? "bg-foreground text-background shadow-lg" 
-                  : "hover:bg-secondary text-muted-foreground hover:text-foreground"
+                  ? "bg-[#00ff88] text-black border-transparent shadow-none" 
+                  : "bg-transparent border-[#1e1e24] text-[#a1a1aa] hover:text-[#f4f4f5] hover:bg-white/5 hover:border-[#00ff88]/30"
               }`}
             >
               <Send className="size-4" /> Notificar Usuários
             </button>
             <button
               onClick={() => setActiveTab("logs")}
-              className={`flex items-center gap-2 px-4 py-3 rounded-full text-xs font-semibold whitespace-nowrap transition-all duration-300 w-full justify-start ${
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-[2px] text-[10px] font-mono font-bold uppercase tracking-wider whitespace-nowrap transition-all duration-300 w-full justify-start border ${
                 activeTab === "logs" 
-                  ? "bg-foreground text-background shadow-lg" 
-                  : "hover:bg-secondary text-muted-foreground hover:text-foreground"
+                  ? "bg-[#00ff88] text-black border-transparent shadow-none" 
+                  : "bg-transparent border-[#1e1e24] text-[#a1a1aa] hover:text-[#f4f4f5] hover:bg-white/5 hover:border-[#00ff88]/30"
               }`}
             >
               <Shield className="size-4" /> Logs & Auditoria
             </button>
             <button
               onClick={() => setActiveTab("users")}
-              className={`flex items-center gap-2 px-4 py-3 rounded-full text-xs font-semibold whitespace-nowrap transition-all duration-300 w-full justify-start ${
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-[2px] text-[10px] font-mono font-bold uppercase tracking-wider whitespace-nowrap transition-all duration-300 w-full justify-start border ${
                 activeTab === "users" 
-                  ? "bg-foreground text-background shadow-lg" 
-                  : "hover:bg-secondary text-muted-foreground hover:text-foreground"
+                  ? "bg-[#00ff88] text-black border-transparent shadow-none" 
+                  : "bg-transparent border-[#1e1e24] text-[#a1a1aa] hover:text-[#f4f4f5] hover:bg-white/5 hover:border-[#00ff88]/30"
               }`}
             >
               <Users className="size-4" /> Usuários
             </button>
             <button
               onClick={() => setActiveTab("diagnostics")}
-              className={`flex items-center gap-2 px-4 py-3 rounded-full text-xs font-semibold whitespace-nowrap transition-all duration-300 w-full justify-start ${
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-[2px] text-[10px] font-mono font-bold uppercase tracking-wider whitespace-nowrap transition-all duration-300 w-full justify-start border ${
                 activeTab === "diagnostics" 
-                  ? "bg-foreground text-background shadow-lg" 
-                  : "hover:bg-secondary text-muted-foreground hover:text-foreground"
+                  ? "bg-[#00ff88] text-black border-transparent shadow-none" 
+                  : "bg-transparent border-[#1e1e24] text-[#a1a1aa] hover:text-[#f4f4f5] hover:bg-white/5 hover:border-[#00ff88]/30"
               }`}
             >
               <Activity className="size-4" /> Diagnósticos
@@ -605,30 +607,30 @@ export default function AdminPage() {
                 setActiveTab("insights")
                 fetchLogs()
               }}
-              className={`flex items-center gap-2 px-4 py-3 rounded-full text-xs font-semibold whitespace-nowrap transition-all duration-300 w-full justify-start ${
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-[2px] text-[10px] font-mono font-bold uppercase tracking-wider whitespace-nowrap transition-all duration-300 w-full justify-start border ${
                 activeTab === "insights" 
-                  ? "bg-foreground text-background shadow-lg" 
-                  : "hover:bg-secondary text-muted-foreground hover:text-foreground"
+                  ? "bg-[#00ff88] text-black border-transparent shadow-none" 
+                  : "bg-transparent border-[#1e1e24] text-[#a1a1aa] hover:text-[#f4f4f5] hover:bg-white/5 hover:border-[#00ff88]/30"
               }`}
             >
               <BarChart3 className="size-4" /> Insights & Métricas
             </button>
             <button
               onClick={() => setActiveTab("backups")}
-              className={`flex items-center gap-2 px-4 py-3 rounded-full text-xs font-semibold whitespace-nowrap transition-all duration-300 w-full justify-start ${
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-[2px] text-[10px] font-mono font-bold uppercase tracking-wider whitespace-nowrap transition-all duration-300 w-full justify-start border ${
                 activeTab === "backups" 
-                  ? "bg-foreground text-background shadow-lg" 
-                  : "hover:bg-secondary text-muted-foreground hover:text-foreground"
+                  ? "bg-[#00ff88] text-black border-transparent shadow-none" 
+                  : "bg-transparent border-[#1e1e24] text-[#a1a1aa] hover:text-[#f4f4f5] hover:bg-white/5 hover:border-[#00ff88]/30"
               }`}
             >
               <Database className="size-4" /> Backups
             </button>
             <button
               onClick={() => setActiveTab("copilot")}
-              className={`flex items-center gap-2 px-4 py-3 rounded-full text-xs font-semibold whitespace-nowrap transition-all duration-300 w-full justify-start ${
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-[2px] text-[10px] font-mono font-bold uppercase tracking-wider whitespace-nowrap transition-all duration-300 w-full justify-start border ${
                 activeTab === "copilot" 
-                  ? "bg-foreground text-background shadow-lg" 
-                  : "hover:bg-secondary text-muted-foreground hover:text-foreground"
+                  ? "bg-[#00ff88] text-black border-transparent shadow-none" 
+                  : "bg-transparent border-[#1e1e24] text-[#a1a1aa] hover:text-[#f4f4f5] hover:bg-white/5 hover:border-[#00ff88]/30"
               }`}
             >
               <Sparkles className="size-4" /> Co-piloto IA
@@ -644,7 +646,7 @@ export default function AdminPage() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -15 }}
                   transition={{ duration: 0.3 }}
-                  className="glass-card p-6 space-y-6"
+                  className="border border-[#1e1e24] bg-[#09090b] p-6 space-y-6 rounded-[2px]"
                 >
                   <div>
                     <h3 className="text-sm font-bold tracking-tight mb-1">Controles de Segurança</h3>
@@ -884,7 +886,7 @@ export default function AdminPage() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -15 }}
                   transition={{ duration: 0.3 }}
-                  className="glass-card p-6 space-y-6"
+                  className="border border-[#1e1e24] bg-[#09090b] p-6 space-y-6 rounded-[2px]"
                 >
                   <div className="flex justify-between items-center border-b border-border/40 pb-4">
                     <div>
@@ -1444,7 +1446,7 @@ export default function AdminPage() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -15 }}
                   transition={{ duration: 0.3 }}
-                  className="glass-card p-6 space-y-6"
+                  className="border border-[#1e1e24] bg-[#09090b] p-6 space-y-6 rounded-[2px]"
                 >
                   <div>
                     <h3 className="text-sm font-bold tracking-tight mb-1">Notificar Usuários</h3>
@@ -1600,7 +1602,7 @@ export default function AdminPage() {
                     </div>
                   </div>
 
-                  <div className="glass-card overflow-hidden">
+                  <div className="border border-[#1e1e24] bg-[#09090b] overflow-hidden rounded-[2px]">
                     <div className="overflow-x-auto">
                       <table className="w-full text-left text-xs border-collapse">
                         <thead>
@@ -1741,7 +1743,7 @@ export default function AdminPage() {
                     </div>
                   </div>
 
-                  <div className="glass-card overflow-hidden">
+                  <div className="border border-[#1e1e24] bg-[#09090b] overflow-hidden rounded-[2px]">
                     <div className="overflow-x-auto">
                       <table className="w-full text-left text-xs border-collapse">
                         <thead>
@@ -1816,7 +1818,7 @@ export default function AdminPage() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -15 }}
                   transition={{ duration: 0.3 }}
-                  className="glass-card p-6 space-y-6"
+                  className="border border-[#1e1e24] bg-[#09090b] p-6 space-y-6 rounded-[2px]"
                 >
                   <div className="flex justify-between items-center border-b border-border/40 pb-4">
                     <div>
@@ -1909,7 +1911,7 @@ export default function AdminPage() {
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div className="glass-card p-6 space-y-4">
+                    <div className="border border-[#1e1e24] bg-[#09090b] p-6 space-y-4 rounded-[2px]">
                       <h4 className="text-xs font-bold">Ações Mais Frequentes</h4>
                       <div className="space-y-2">
                         {insightsStats.topActions.length === 0 ? (
@@ -1925,7 +1927,7 @@ export default function AdminPage() {
                       </div>
                     </div>
 
-                    <div className="glass-card p-6 space-y-4 flex flex-col justify-between">
+                    <div className="border border-[#1e1e24] bg-[#09090b] p-6 space-y-4 flex flex-col justify-between rounded-[2px]">
                       <div className="space-y-2">
                         <h4 className="text-xs font-bold">Eficiência do Sistema</h4>
                         <p className="text-[11px] text-muted-foreground font-light leading-relaxed">
@@ -1956,7 +1958,7 @@ export default function AdminPage() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -15 }}
                   transition={{ duration: 0.3 }}
-                  className="glass-card p-6 space-y-6"
+                  className="border border-[#1e1e24] bg-[#09090b] p-6 space-y-6 rounded-[2px]"
                 >
                   <div className="flex items-center gap-3 pb-4 border-b border-border/40">
                     <div className="p-2.5 bg-secondary/50 rounded-xl">
@@ -2006,7 +2008,7 @@ export default function AdminPage() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -15 }}
                   transition={{ duration: 0.3 }}
-                  className="glass-card p-6 space-y-6 flex flex-col h-[600px] justify-between"
+                  className="border border-[#1e1e24] bg-[#09090b] p-6 space-y-6 flex flex-col h-[600px] justify-between rounded-[2px]"
                 >
                   <div className="flex items-center justify-between pb-4 border-b border-border/40 shrink-0">
                     <div className="flex items-center gap-3">

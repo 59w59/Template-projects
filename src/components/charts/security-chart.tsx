@@ -36,20 +36,20 @@ export function SecurityChart() {
     .join(" ")
 
   return (
-    <div className="rounded-xl border border-border bg-card/30 p-5 backdrop-blur-md">
-      <div className="mb-4 flex items-center justify-between">
+    <div className="border border-[#1e1e24] bg-[#09090b] p-5 rounded-[2px] transition-all duration-300 hover:border-[#00ff88]/30">
+      <div className="mb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
         <div>
-          <h3 className="text-sm font-semibold text-foreground">Tráfego & Segurança</h3>
-          <p className="text-xs text-muted-foreground">Requisições vs Ataques bloqueados nas últimas 24h</p>
+          <h3 className="text-xs font-black uppercase tracking-wider text-[#00ff88]">Tráfego & Segurança</h3>
+          <p className="text-[10px] text-[#a1a1aa] font-mono">REQUISIÇÕES VS ATAQUES BLOQUEADOS</p>
         </div>
-        <div className="flex items-center gap-3 text-xs">
+        <div className="flex items-center gap-3 text-[9px] font-mono">
           <div className="flex items-center gap-1.5">
-            <span className="h-2.5 w-2.5 rounded-full bg-emerald-500" />
-            <span className="text-muted-foreground">Requisições</span>
+            <span className="h-2 w-2 bg-[#00ff88]" />
+            <span className="text-[#a1a1aa] uppercase">Tráfego</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="h-2.5 w-2.5 rounded-full bg-red-500" />
-            <span className="text-muted-foreground">Bloqueios</span>
+            <span className="h-2 w-2 bg-red-500" />
+            <span className="text-[#a1a1aa] uppercase">Bloqueios</span>
           </div>
         </div>
       </div>
@@ -57,27 +57,23 @@ export function SecurityChart() {
         <svg viewBox={`0 0 ${width} ${height}`} className="h-full w-full overflow-visible">
           <defs>
             <linearGradient id="reqGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#10b981" stopOpacity="0.25" />
-              <stop offset="100%" stopColor="#10b981" stopOpacity="0.0" />
+              <stop offset="0%" stopColor="#00ff88" stopOpacity="0.15" />
+              <stop offset="100%" stopColor="#00ff88" stopOpacity="0.0" />
             </linearGradient>
             <linearGradient id="blockGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#ef4444" stopOpacity="0.25" />
+              <stop offset="0%" stopColor="#ef4444" stopOpacity="0.15" />
               <stop offset="100%" stopColor="#ef4444" stopOpacity="0.0" />
             </linearGradient>
           </defs>
 
-          {/* Grid lines */}
-          <line x1="0" y1={height / 3} x2={width} y2={height / 3} stroke="var(--border)" strokeWidth="0.5" strokeDasharray="4 4" />
-          <line x1="0" y1={(height * 2) / 3} x2={width} y2={(height * 2) / 3} stroke="var(--border)" strokeWidth="0.5" strokeDasharray="4 4" />
+          <line x1="0" y1={height / 3} x2={width} y2={height / 3} stroke="#1e1e24" strokeWidth="0.75" strokeDasharray="3 3" />
+          <line x1="0" y1={(height * 2) / 3} x2={width} y2={(height * 2) / 3} stroke="#1e1e24" strokeWidth="0.75" strokeDasharray="3 3" />
 
-          {/* Requests Area & Line */}
           <polygon points={fillPoints} fill="url(#reqGrad)" />
-          <polyline points={points} fill="none" stroke="#10b981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+          <polyline points={points} fill="none" stroke="#00ff88" strokeWidth="2" strokeLinecap="square" strokeLinejoin="miter" />
 
-          {/* Blocks Line */}
-          <polyline points={blockPoints} fill="none" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="1 1" />
+          <polyline points={blockPoints} fill="none" stroke="#ef4444" strokeWidth="1.5" strokeLinecap="square" strokeLinejoin="miter" strokeDasharray="2 2" />
 
-          {/* Data Points */}
           {data.map((d, i) => {
             const x = (i / (data.length - 1)) * width
             const yReq = height - (d.requests / maxVal) * height
@@ -85,14 +81,14 @@ export function SecurityChart() {
 
             return (
               <g key={i}>
-                <circle cx={x} cy={yReq} r="4" fill="var(--background)" stroke="#10b981" strokeWidth="2" className="cursor-pointer transition-transform hover:scale-150" />
-                <circle cx={x} cy={yBlk} r="3" fill="var(--background)" stroke="#ef4444" strokeWidth="2" />
+                <rect x={x - 2.5} y={yReq - 2.5} width="5" height="5" fill="#050506" stroke="#00ff88" strokeWidth="1.5" className="cursor-pointer transition-transform hover:scale-150" />
+                <rect x={x - 2} y={yBlk - 2} width="4" height="4" fill="#050506" stroke="#ef4444" strokeWidth="1" />
               </g>
             )
           })}
         </svg>
       </div>
-      <div className="mt-3 flex justify-between text-[10px] text-muted-foreground">
+      <div className="mt-3 flex justify-between text-[9px] font-mono text-[#a1a1aa]">
         {data.map((d, i) => (
           <span key={i}>{d.label}</span>
         ))}
