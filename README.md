@@ -15,7 +15,7 @@
   <img src="https://img.shields.io/badge/SQLite-Ready-003B57?style=flat-square&logo=sqlite" alt="SQLite" />
 </p>
 
-Boilerplate de nível empresarial para **Next.js (App Router)** com foco em **segurança de nível bancário**, arquitetura multi-driver de banco de dados, controle de equipes (**multi-tenant**), faturamento modular e telemetria de latência integrada a todas as APIs.
+Boilerplate de nível empresarial para **Next.js (App Router)** com foco em **segurança**, arquitetura multi-driver de banco de dados, controle de equipes (**multi-tenant**), faturamento modular e telemetria de latência integrada a todas as APIs.
 
 ---
 
