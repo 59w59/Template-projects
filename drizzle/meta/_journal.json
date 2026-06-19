@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1781799068194,
+      "tag": "0000_outstanding_the_fury",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1781800033614,
+      "tag": "0001_wild_sasquatch",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1781841099809,
+      "tag": "0002_soft_gambit",
+      "breakpoints": true
+    }
+  ]
+}
