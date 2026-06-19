@@ -2,8 +2,6 @@ import os from "os"
 import { sql } from "drizzle-orm"
 import { getDrizzleDb, databaseType } from "../db/connection"
 import { connectToMongoDB } from "../db/mongodb"
-import { redisClient } from "../services/redis"
-import { s3Client } from "../services/s3"
 
 export interface HealthStatus {
   status: "healthy" | "unhealthy"
@@ -50,16 +48,29 @@ export async function runHealthCheck(): Promise<HealthStatus> {
   }
 
   let redisStatus: "healthy" | "unhealthy" | "disabled" = "disabled"
-  if (redisClient) {
-    try {
-      await redisClient.ping()
-      redisStatus = "healthy"
-    } catch {
-      redisStatus = "unhealthy"
+  try {
+    const { getRedisClient } = await import("../services/redis")
+    const redis = await getRedisClient()
+    if (redis) {
+      try {
+        await redis.ping()
+        redisStatus = "healthy"
+      } catch {
+        redisStatus = "unhealthy"
+      }
     }
+  } catch {
+    redisStatus = "unhealthy"
   }
 
-  const storageStatus = s3Client ? "healthy" : "disabled"
+  let storageStatus: "healthy" | "disabled" = "disabled"
+  try {
+    const { getS3Client } = await import("../services/s3")
+    const s3 = await getS3Client()
+    storageStatus = s3 ? "healthy" : "disabled"
+  } catch {
+    storageStatus = "disabled"
+  }
 
   const totalMem = os.totalmem()
   const freeMem = os.freemem()
@@ -94,6 +105,7 @@ export async function runHealthCheck(): Promise<HealthStatus> {
     system,
   }
 }
+
 export async function getQuickDatabaseHealth(): Promise<"healthy" | "unhealthy"> {
   try {
     if (databaseType === "mongodb") {

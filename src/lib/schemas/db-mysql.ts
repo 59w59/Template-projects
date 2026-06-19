@@ -4,7 +4,7 @@ import { sql } from "drizzle-orm"
 export const users = mysqlTable("users", {
   id: varchar("id", { length: 255 }).primaryKey(),
   email: varchar("email", { length: 255 }).notNull().unique(),
-  passwordHash: text("password_hash").notNull(),
+  passwordHash: text("password_hash"),
   role: varchar("role", { length: 50 }).notNull().default("user"),
   emailVerified: boolean("email_verified").notNull().default(false),
   twoFactorEnabled: boolean("two_factor_enabled").notNull().default(false),
@@ -12,6 +12,8 @@ export const users = mysqlTable("users", {
   twoFactorExpiresAt: datetime("two_factor_expires_at", { mode: "date" }),
   resetTokenHash: text("reset_token_hash"),
   resetTokenExpiresAt: datetime("reset_token_expires_at", { mode: "date" }),
+  provider: varchar("provider", { length: 100 }),
+  providerId: varchar("provider_id", { length: 255 }),
   createdAt: datetime("created_at", { mode: "date" }).notNull().default(sql`CURRENT_TIMESTAMP`),
   updatedAt: datetime("updated_at", { mode: "date" }).notNull().default(sql`CURRENT_TIMESTAMP`),
 })
@@ -98,4 +100,10 @@ export const notifications = mysqlTable("notifications", {
   type: varchar("type", { length: 50 }).notNull().default("info"),
   isRead: boolean("is_read").notNull().default(false),
   createdAt: datetime("created_at", { mode: "date" }).notNull().default(sql`CURRENT_TIMESTAMP`),
+})
+
+export const systemSettings = mysqlTable("system_settings", {
+  key: varchar("key", { length: 255 }).primaryKey(),
+  value: text("value").notNull(),
+  updatedAt: datetime("updated_at", { mode: "date" }).notNull().default(sql`CURRENT_TIMESTAMP`),
 })

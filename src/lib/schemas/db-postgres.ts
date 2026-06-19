@@ -3,7 +3,7 @@ import { pgTable, varchar, timestamp, boolean, text, integer } from "drizzle-orm
 export const users = pgTable("users", {
   id: varchar("id", { length: 255 }).primaryKey(),
   email: varchar("email", { length: 255 }).notNull().unique(),
-  passwordHash: text("password_hash").notNull(),
+  passwordHash: text("password_hash"),
   role: varchar("role", { length: 50 }).notNull().default("user"),
   emailVerified: boolean("email_verified").notNull().default(false),
   twoFactorEnabled: boolean("two_factor_enabled").notNull().default(false),
@@ -11,6 +11,8 @@ export const users = pgTable("users", {
   twoFactorExpiresAt: timestamp("two_factor_expires_at"),
   resetTokenHash: text("reset_token_hash"),
   resetTokenExpiresAt: timestamp("reset_token_expires_at"),
+  provider: varchar("provider", { length: 100 }),
+  providerId: varchar("provider_id", { length: 255 }),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 })
@@ -97,4 +99,10 @@ export const notifications = pgTable("notifications", {
   type: varchar("type", { length: 50 }).notNull().default("info"),
   isRead: boolean("is_read").notNull().default(false),
   createdAt: timestamp("created_at").notNull().defaultNow(),
+})
+
+export const systemSettings = pgTable("system_settings", {
+  key: varchar("key", { length: 255 }).primaryKey(),
+  value: text("value").notNull(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
 })

@@ -5,6 +5,7 @@ import { isRateLimited } from "../rate-limit/rate-limiter"
 import { verifyAccessToken, verifyCSRFToken } from "../auth/auth"
 import { getQuickDatabaseHealth } from "../health/health-check"
 import { sanitizePayload } from "../security/sanitizer"
+import { getSystemSettings, addIPToBlocklist } from "../settings/system-settings"
 import os from "os"
 
 export class HttpError extends Error {
@@ -42,6 +43,11 @@ export function defineHandler<TBody extends z.ZodTypeAny = z.ZodTypeAny>(
     let response: NextResponse
 
     try {
+      const settings = await getSystemSettings()
+      if (settings.blockedIPs.includes(ip)) {
+        throw new HttpError(403, "Acesso negado: seu IP está bloqueado.")
+      }
+
       const contentLength = parseInt(req.headers.get("content-length") || "0")
       if (contentLength > 1024 * 1024 && !path.includes("/api/storage/upload")) {
         throw new HttpError(413, "Payload Too Large")
@@ -49,10 +55,17 @@ export function defineHandler<TBody extends z.ZodTypeAny = z.ZodTypeAny>(
 
       dbHealth = await getQuickDatabaseHealth()
 
-      if (config.rateLimit) {
-        const limited = await isRateLimited(ip, config.rateLimit)
+      const rateLimitMax = settings.rateLimitMax || config.rateLimit?.max || 100
+      const rateLimitWindow = settings.rateLimitWindow || config.rateLimit?.windowMs || 60000
+
+      if (config.rateLimit || path.startsWith("/api")) {
+        const limited = await isRateLimited(ip, { windowMs: rateLimitWindow, max: rateLimitMax })
         if (limited) {
-          throw new HttpError(429, "Too Many Requests")
+          if (settings.autoPunish) {
+            await addIPToBlocklist(ip)
+            logger.warn(`IP ${ip} banido automaticamente após exceder rate limit`)
+          }
+          throw new HttpError(429, "Limite de requisições excedido. Seu IP foi bloqueado temporariamente.")
         }
       }
 
@@ -75,6 +88,18 @@ export function defineHandler<TBody extends z.ZodTypeAny = z.ZodTypeAny>(
 
       if (token) {
         user = await verifyAccessToken(token)
+      }
+
+      if (settings.maintenanceMode) {
+        const isApiAdmin = path.startsWith("/api/admin")
+        const isAdminUser = user && user.role === "admin"
+        if (!isAdminUser && !isApiAdmin && path !== "/api/auth/login" && path !== "/api/auth/me") {
+          throw new HttpError(503, settings.maintenanceMessage)
+        }
+      }
+
+      if (settings.disableRegistrations && path === "/api/auth/register") {
+        throw new HttpError(400, "Os novos cadastros estão temporariamente desativados.")
       }
 
       if (config.requireAuth && !user) {

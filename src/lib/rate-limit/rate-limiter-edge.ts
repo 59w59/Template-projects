@@ -1,29 +1,10 @@
-import { logger } from "../logger/logger"
+import { Redis } from "@upstash/redis"
 
-interface RateLimitConfig {
-  windowMs: number
-  max: number
-}
+const redisUrl = process.env.UPSTASH_REDIS_REST_URL
+const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN
 
+const redis = redisUrl && redisToken ? new Redis({ url: redisUrl, token: redisToken }) : null
 const memoryStore = new Map<string, number[]>()
-
-if (typeof window === "undefined") {
-  const interval = setInterval(() => {
-    const now = Date.now()
-    for (const [ip, timestamps] of memoryStore.entries()) {
-      const validTimestamps = timestamps.filter((t) => now - t < 5 * 60 * 1000)
-      if (validTimestamps.length === 0) {
-        memoryStore.delete(ip)
-      } else {
-        memoryStore.set(ip, validTimestamps)
-      }
-    }
-  }, 5 * 60 * 1000)
-  
-  if (interval.unref) {
-    interval.unref()
-  }
-}
 
 export function getClientIp(headersList: Headers): string {
   const xForwardedFor = headersList.get("x-forwarded-for")
@@ -33,43 +14,34 @@ export function getClientIp(headersList: Headers): string {
   return headersList.get("x-real-ip") || "127.0.0.1"
 }
 
-export async function isRateLimited(ip: string, config: RateLimitConfig): Promise<boolean> {
-  try {
-    const { getRedisClient } = await import("../services/redis")
-    const redis = await getRedisClient()
-    if (redis) {
+export async function isRateLimitedEdge(ip: string, config: { windowMs: number; max: number }): Promise<boolean> {
+  if (redis) {
+    try {
       const key = `ratelimit:${ip}`
       const now = Date.now()
       const clearBefore = now - config.windowMs
       
       await redis.zremrangebyscore(key, 0, clearBefore)
       const activeCount = await redis.zcard(key)
-      
       if (activeCount >= config.max) {
         return true
       }
-      
       await redis.zadd(key, { score: now, member: `${now}-${Math.random()}` })
       await redis.expire(key, Math.ceil(config.windowMs / 1000))
       return false
+    } catch {
     }
-  } catch (err: any) {
-    logger.warn("Redis rate limiter failed, falling back to in-memory", undefined, err as Error)
   }
 
   const now = Date.now()
   const clearBefore = now - config.windowMs
   let timestamps = memoryStore.get(ip) || []
   timestamps = timestamps.filter((t) => t > clearBefore)
-  
   if (timestamps.length >= config.max) {
     memoryStore.set(ip, timestamps)
     return true
   }
-  
   timestamps.push(now)
   memoryStore.set(ip, timestamps)
   return false
 }
-
-export type { RateLimitConfig }

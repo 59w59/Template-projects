@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
-import { isRateLimited, getClientIp } from "./lib/rate-limit/rate-limiter"
+import { isRateLimitedEdge, getClientIp } from "./lib/rate-limit/rate-limiter-edge"
 
 export async function middleware(request: NextRequest) {
   const startTime = Date.now()
@@ -8,7 +8,7 @@ export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname
 
   if (path.startsWith("/api")) {
-    const limited = await isRateLimited(ip, { windowMs: 60000, max: 100 })
+    const limited = await isRateLimitedEdge(ip, { windowMs: 60000, max: 100 })
     if (limited) {
       return new NextResponse(JSON.stringify({ error: "Too Many Requests" }), {
         status: 429,
@@ -58,7 +58,6 @@ export async function middleware(request: NextRequest) {
 
   let response: NextResponse
   if (path.startsWith("/api/auth/refresh")) {
-    // If it's the refresh route, we let it process cookies
     response = NextResponse.next({
       request: {
         headers: requestHeaders,

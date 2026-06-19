@@ -1,4 +1,5 @@
 import Stripe from "stripe"
+import { getSystemSettings } from "../settings/system-settings"
 
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY || "sk_test_mock"
 
@@ -6,13 +7,22 @@ export const stripe = new Stripe(stripeSecretKey, {
   apiVersion: "2026-05-27.dahlia" as any,
 })
 
+export async function getStripeClient(): Promise<Stripe> {
+  const settings = await getSystemSettings()
+  const key = settings.stripeSecretKey || process.env.STRIPE_SECRET_KEY || "sk_test_mock"
+  return new Stripe(key, {
+    apiVersion: "2026-05-27.dahlia" as any,
+  })
+}
+
 export async function createCheckoutSession(
   priceId: string,
   customerId?: string,
   customerEmail?: string
 ): Promise<string | null> {
   try {
-    const session = await stripe.checkout.sessions.create({
+    const client = await getStripeClient()
+    const session = await client.checkout.sessions.create({
       payment_method_types: ["card"],
       line_items: [
         {
@@ -32,9 +42,10 @@ export async function createCheckoutSession(
   }
 }
 
-export function verifyStripeWebhook(body: string, signature: string, endpointSecret: string): Stripe.Event | null {
+export async function verifyStripeWebhook(body: string, signature: string, endpointSecret: string): Promise<Stripe.Event | null> {
   try {
-    return stripe.webhooks.constructEvent(body, signature, endpointSecret)
+    const client = await getStripeClient()
+    return client.webhooks.constructEvent(body, signature, endpointSecret)
   } catch {
     return null
   }

@@ -2,6 +2,7 @@ import nodemailer from "nodemailer"
 import { logger } from "../logger/logger"
 import { emailPresets } from "./presets"
 import { MailConfig } from "@/types/nodemailer"
+import { getSystemSettings } from "../settings/system-settings"
 
 const emailService = process.env.EMAIL_SERVICE || "smtp"
 const emailUser = process.env.EMAIL_USER
@@ -37,7 +38,26 @@ const config = getMailConfig()
 const transporter = config ? nodemailer.createTransport(config) : null
 
 export async function sendMail(options: { to: string; subject: string; html: string }): Promise<boolean> {
-  if (!transporter) {
+  const settings = await getSystemSettings()
+  let activeTransporter = null
+
+  if (settings.smtpUser && settings.smtpPass) {
+    activeTransporter = nodemailer.createTransport({
+      host: settings.smtpHost || "localhost",
+      port: settings.smtpPort || 587,
+      secure: settings.smtpSecure,
+      auth: {
+        user: settings.smtpUser,
+        pass: settings.smtpPass,
+      },
+    })
+  } else {
+    activeTransporter = transporter
+  }
+
+  const activeFromEmail = settings.smtpFrom || fromEmail
+
+  if (!activeTransporter) {
     logger.info(`[Email Console Fallback] Email would be sent to: ${options.to}`)
     logger.info(`Subject: ${options.subject}`)
     logger.info(`HTML Content:\n${options.html}`)
@@ -45,8 +65,8 @@ export async function sendMail(options: { to: string; subject: string; html: str
   }
 
   try {
-    await transporter.sendMail({
-      from: fromEmail,
+    await activeTransporter.sendMail({
+      from: activeFromEmail,
       to: options.to,
       subject: options.subject,
       html: options.html,

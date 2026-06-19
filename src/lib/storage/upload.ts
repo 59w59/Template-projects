@@ -1,4 +1,4 @@
-import { uploadFile, getPublicUrl, s3Client } from "../services/s3"
+import { uploadFile, getPublicUrl, getS3Client } from "../services/s3"
 import fs from "fs"
 import path from "path"
 import { generateSecureToken } from "../utils"
@@ -42,14 +42,15 @@ export async function processAndStoreFile(
   const sanitizedName = path.basename(fileName, ext).replace(/[^a-zA-Z0-9_-]/g, "")
   const fileKey = `${Date.now()}-${generateSecureToken(8)}${ext}`
 
-  const provider = process.env.STORAGE_PROVIDER === "s3" && s3Client ? "s3" : "local"
+  const client = await getS3Client()
+  const provider = process.env.STORAGE_PROVIDER === "s3" && client ? "s3" : "local"
 
   if (provider === "s3") {
     const success = await uploadFile(fileKey, buffer, mimeType)
     if (!success) {
       throw new Error("Falha ao fazer upload do arquivo para o S3/R2")
     }
-    const url = getPublicUrl(fileKey)
+    const url = await getPublicUrl(fileKey)
     return {
       fileName: `${sanitizedName}${ext}`,
       fileKey,

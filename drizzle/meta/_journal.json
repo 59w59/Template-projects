@@ -22,6 +22,20 @@
       "when": 1781841099809,
       "tag": "0002_soft_gambit",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1781883549025,
+      "tag": "0003_cute_talon",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1781885369121,
+      "tag": "0004_lyrical_war_machine",
+      "breakpoints": true
     }
   ]
 }

@@ -4,7 +4,7 @@ import { text, integer, sqliteTable } from "drizzle-orm/sqlite-core"
 export const users = sqliteTable("users", {
   id: text("id").primaryKey(),
   email: text("email").notNull().unique(),
-  passwordHash: text("password_hash").notNull(),
+  passwordHash: text("password_hash"),
   role: text("role").notNull().default("user"),
   emailVerified: integer("email_verified", { mode: "boolean" }).notNull().default(false),
   twoFactorEnabled: integer("two_factor_enabled", { mode: "boolean" }).notNull().default(false),
@@ -12,6 +12,8 @@ export const users = sqliteTable("users", {
   twoFactorExpiresAt: integer("two_factor_expires_at", { mode: "timestamp" }),
   resetTokenHash: text("reset_token_hash"),
   resetTokenExpiresAt: integer("reset_token_expires_at", { mode: "timestamp" }),
+  provider: text("provider"),
+  providerId: text("provider_id"),
   createdAt: integer("created_at", { mode: "timestamp" }).notNull().default(sql`(strftime('%s', 'now'))`),
   updatedAt: integer("updated_at", { mode: "timestamp" }).notNull().default(sql`(strftime('%s', 'now'))`),
 })
@@ -98,4 +100,10 @@ export const notifications = sqliteTable("notifications", {
   type: text("type").notNull().default("info"),
   isRead: integer("is_read", { mode: "boolean" }).notNull().default(false),
   createdAt: integer("created_at", { mode: "timestamp" }).notNull().default(sql`(strftime('%s', 'now'))`),
+})
+
+export const systemSettings = sqliteTable("system_settings", {
+  key: text("key").primaryKey(),
+  value: text("value").notNull(),
+  updatedAt: integer("updated_at", { mode: "timestamp" }).notNull().default(sql`(strftime('%s', 'now'))`),
 })
